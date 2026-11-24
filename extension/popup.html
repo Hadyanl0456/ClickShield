@@ -11,13 +11,18 @@
   <main class="popup">
     <header class="header">
       <div class="brand"><div class="shield-icon" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 3 34 8v11c0 9-5.9 14.8-14 18-8.1-3.2-14-9-14-18V8L20 3Z" stroke="currentColor" stroke-width="2.5"/><path d="m13.5 20 4.4 4.3 8.4-8.4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/></svg></div><div><h1>ClickShield<span>.</span></h1><p>PROTECTION BEFORE THE CLICK</p></div></div>
-      <span class="version">BETA / 01</span>
+      <span class="version">BETA / 03</span>
     </header>
     <div class="intro"><span class="section-caption">CURRENT WEBSITE</span><strong id="siteName">Detecting active tab...</strong><div class="toggle-row"><div><b>Automatic protection</b><span>Watch supported webpages and pause risky native form submissions</span></div><label class="switch"><input type="checkbox" id="scanToggle" aria-label="Enable automatic protection"><span class="track"></span></label></div><p class="auto-note">Off by default. Enable it to activate automatic monitoring. Manual scans are always available.</p></div>
     <section class="scan-card" aria-live="polite"><div class="scan-header"><span class="section-caption">SECURITY INSIGHT</span><span class="badge neutral" id="riskBadge">NOT SCANNED</span></div><div class="scan-icon" id="riskIcon">✦</div><h2 id="riskTitle">Ready when you are.</h2><p id="riskDescription">Run a manual scan to check for selected suspicious page patterns.</p><ul id="signals" class="signals" hidden></ul></section>
     <button class="scan-button" id="scanButton" type="button"><span>Scan this page</span><span>↗</span></button><p class="scan-meta" id="scanMeta">No scan performed yet</p>
+    <section class="ai-card" aria-label="Optional AI explanation">
+      <div class="ai-heading"><span class="ai-spark">✧</span><div><strong>Explain with Gemini</strong><span>Optional · only risk-signal categories are shared</span></div></div>
+      <button class="ai-button" id="aiButton" type="button" disabled>Explain detected warning signs ↗</button>
+      <p class="ai-answer" id="aiAnswer" aria-live="polite">Scan a page with warning signs to enable AI explanations.</p>
+    </section>
     <footer class="footer"><div><b>LOCAL-FIRST</b><span>Rule-based inspection</span></div><div class="history"><b id="scanCount">0</b><span>Recent scans</span></div></footer>
-    <p class="disclaimer">Version 0.2 · Local rule-based prototype. Browser access to supported sites is required for automatic warnings. A scan is not a fraud verdict. Native form interception does not cover every website action.</p>
+    <p class="disclaimer">Version 0.3 · Local rule-based prototype. Browser access to supported sites is required for automatic warnings. A scan is not a fraud verdict. Gemini explanations require the separately running local backend; no form values or page text are sent. Native interception does not cover every action.</p>
   </main>
 </body>
 </html>

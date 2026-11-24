@@ -11,6 +11,10 @@ const riskDescription = $('riskDescription');
 const signalsList = $('signals');
 const scanMeta = $('scanMeta');
 const scanCount = $('scanCount');
+const aiButton = $('aiButton');
+const aiAnswer = $('aiAnswer');
+let currentFinding = null;
+const BACKEND_ENDPOINT = 'http://127.0.0.1:8765/api/explain';
 let currentTab;
 
 function showStatus(level, title, explanation, evidence = []) {
@@ -33,6 +37,9 @@ function isSupportedTab(tab) {
 }
 
 function renderFinding(finding) {
+  currentFinding = finding;
+  aiAnswer.textContent = 'Optional: send only detected signal categories to the local AI backend.';
+  aiButton.disabled = !finding || !Array.isArray(finding.indicators) || finding.indicators.length === 0;
   const descriptions = {
     low:['No listed signals found', 'Our limited rules did not identify a matching warning pattern. This is not a guarantee of safety.'],
     caution:['A closer look is worthwhile', 'Some signals merit further review. A warning is not proof of fraud.'],
@@ -112,3 +119,36 @@ scanButton.addEventListener('click', async () => {
 });
 
 initialize();
+
+// AI runs ONLY on explicit user click, never on page load or automatic scans.
+aiButton.addEventListener('click', async () => {
+  if (!currentFinding?.indicators?.length) return;
+  aiButton.disabled = true;
+  aiButton.textContent = 'Requesting explanation...';
+  aiAnswer.textContent = 'Contacting local ClickShield backend...';
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 28000);
+  try {
+    // Only predefined indicator IDs and broad level are sent. No URL,
+    // hostname, page text, input fields, passwords or cookies are sent.
+    const response = await fetch(BACKEND_ENDPOINT, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({level:currentFinding.level, indicators:currentFinding.indicators}),
+      signal: controller.signal
+    });
+    let data = {};
+    try { data = await response.json(); } catch (_) { /* show generic backend error */ }
+    if (!response.ok || !data.explanation) {
+      throw new Error(data.error || 'Gemini explanation unavailable.');
+    }
+    aiAnswer.textContent = data.explanation + '\n\nAI guidance is advisory and cannot confirm whether a site is safe.';
+  } catch (error) {
+    const reason = error.name === 'AbortError' ? 'The AI request timed out.' : error.message;
+    aiAnswer.textContent = reason + '\nLocal risk detection and pre-submission protection continue to work without AI.';
+  } finally {
+    clearTimeout(timeout);
+    aiButton.textContent = 'Explain detected warning signs ↗';
+    aiButton.disabled = !currentFinding?.indicators?.length;
+  }
+});

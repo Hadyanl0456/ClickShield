@@ -1,17 +1,29 @@
 {
   "manifest_version": 3,
   "name": "ClickShield",
-  "version": "0.2.0",
-  "description": "On-demand scans and optional automatic, local-first webpage warnings. Hackathon prototype by Team Sirius.",
+  "version": "0.3.0",
+  "description": "On-demand and opt-in local risk scanning with optional Gemini explanations via a locally hosted backend.",
   "action": {
-    "default_title": "ClickShield — Browser safety",
+    "default_title": "ClickShield \u2014 Browser safety",
     "default_popup": "popup.html"
   },
-  "permissions": ["activeTab", "storage"],
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8765/*"
+  ],
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["detector.js", "content.js"],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "detector.js",
+        "content.js"
+      ],
       "run_at": "document_start",
       "all_frames": false
     }
